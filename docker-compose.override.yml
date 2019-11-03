@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  composeplayground:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=44326
+    ports:
+      - "57378:80"
+      - "44326:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  elasticsearch:
+    environment:
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
+      - discovery.zen.minimum_master_nodes=1
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+  kibana:
+    environment:
+      - xpack.security.enabled=false
+      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
+
+volumes:
+  elastic_data:
+      driver: local
